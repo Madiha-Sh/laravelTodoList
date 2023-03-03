@@ -50,7 +50,7 @@ Route::get('/', function () {
 
 
 //  With Controller
-Route::get('/todos', [TodoListController::class, 'index']);
+// Route::get('/todos', [TodoListController::class, 'index']);
 
 Route::get('/create', [TodoListController::class, 'create']);
 

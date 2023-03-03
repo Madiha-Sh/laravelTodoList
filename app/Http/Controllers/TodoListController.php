@@ -16,7 +16,10 @@ class TodoListController extends Controller
     {
         //
         $todos = Todo_list::all();
-        return view('/todos')->with('todo_arr', $todos);
+        // return view('/todos')->with('todo_arr', $todos);
+
+        // postman api
+        return response()->json($todos);
     }
 
     /**
@@ -24,10 +27,16 @@ class TodoListController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
         //
-        return view('/create');
+        // return view('/create');
+
+        // postman api
+        $todo = new Todo_List();
+        $todo->name = $request->input('name');
+        $todo->save();
+        return response()->json($todo);
     }
 
     /**
@@ -81,10 +90,23 @@ class TodoListController extends Controller
     public function update(Request $request, Todo_list $todo_list, $todo_id)
     {
         //
-        $edit_todo = Todo_list::find($todo_id);
-        $edit_todo->name = $request->input("name");
-        $edit_todo->save();
-        return redirect('/todos');
+        // $edit_todo = Todo_list::find($todo_id);
+        // $edit_todo->name = $request->input("name");
+        // $edit_todo->save();
+        // return redirect('/todos');
+
+        // postman api
+        $isFound = Todo_List::find($todo_id);
+        if($isFound) {
+            $isFound->name = $request->input("name");
+            $isFound->save();
+            return response()->json($isFound);
+        }
+        else {
+            return response()->json([
+                "error" => "Todo with id $todo_id is not found"
+            ]);
+        }
     }
 
     /**
@@ -101,7 +123,22 @@ class TodoListController extends Controller
 
         // Todo_list::find($todo_id)->delete();
         // or
-        Todo_list::destroy($todo_id);
-        return redirect('/todos');
+        // Todo_list::destroy($todo_id);
+        // return redirect('/todos');
+
+        // postman api
+        $isFound = Todo_List::find($todo_id);
+
+        if($isFound) {
+            Todo_list::find($todo_id)->delete();
+            return response()->json([
+                "msg" => "Todo with id $todo_id is deleted successfully"
+            ]);
+        }
+        else {
+            return response()->json([
+                "error" => "Todo with id $todo_id is not found"
+            ]);
+        }
     }
 }
